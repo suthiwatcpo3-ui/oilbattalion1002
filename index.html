@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ระบบสั่งจ่ายน้ำมัน ร.2 ค่ายตากสิน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f1e8;--card:#fff;--ink:#1d2a1f;--mut:#667062;--pri:#2f4a2a;--gold:#b8892b;--line:#dcd8c6;--ok:#2e7d32;--warn:#c77700;--bad:#b3261e;--hero:#24391f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a13;--card:#1e271c;--ink:#eef0e6;--mut:#a0aa9a;--pri:#8fbf7f;--gold:#e0b452;--line:#33402f;--hero:#0e140d}}
+:root[data-theme="dark"]{--bg:#141a13;--card:#1e271c;--ink:#eef0e6;--mut:#a0aa9a;--pri:#8fbf7f;--gold:#e0b452;--line:#33402f;--hero:#0e140d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Sarabun,sans-serif;font-size:16px}
+header{background:var(--hero);color:#fff;padding:18px 16px;border-bottom:4px solid var(--gold);display:flex;gap:14px;align-items:center}
+.crest{font-size:38px}h1{margin:0;font-size:20px}header small{color:#d9cf9f}
+.wrap{max-width:1000px;margin:0 auto;padding:14px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font:600 16px Sarabun;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+:root[data-theme="dark"] .tabs button.on{color:#0e140d}
+.grid{display:grid;grid-template-columns:1fr 1.3fr;gap:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+h2{margin:0 0 10px;font-size:17px;color:var(--pri)}
+label{display:block;font-weight:600;margin:10px 0 4px;font-size:14px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:16px Sarabun}
+.fuels{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.fuels div{padding:10px 4px;text-align:center;border:2px solid var(--line);border-radius:8px;cursor:pointer;font-weight:600;font-size:14px}
+.fuels div.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 20%,transparent)}
+.btn{width:100%;margin-top:14px;padding:13px;border:0;border-radius:10px;background:var(--gold);color:#1d1400;font:700 17px Sarabun;cursor:pointer}
+.btn.g{background:var(--ok);color:#fff}.btn.s{background:var(--line);color:var(--ink);margin-top:8px}
+.o{border:1px solid var(--line);border-left:6px solid var(--warn);border-radius:10px;padding:10px;margin-bottom:8px}
+.o.doing{border-left-color:#1565c0}.o.done{border-left-color:var(--ok);opacity:.8}.o.cancel{border-left-color:var(--bad);opacity:.55}
+.o b{font-size:18px}.o .m{color:var(--mut);font-size:14px}
+.tag{float:right;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.stats b{display:block;font-size:22px;color:var(--pri)}.stats span{font-size:13px;color:var(--mut)}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;background:var(--line)}
+.mini{background:none;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:3px 8px;cursor:pointer;font:13px Sarabun;margin-top:6px}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:9;padding:16px}
+#modal.show{display:flex}
+.alert{background:var(--card);border:6px solid var(--gold);border-radius:18px;padding:22px;max-width:480px;width:100%;text-align:center;animation:p 1s infinite}
+@keyframes p{50%{box-shadow:0 0 0 14px rgba(184,137,43,.35)}}
+.alert .big{font-size:52px;font-weight:700;color:var(--pri);margin:6px 0}
+.alert .plate{font-size:26px;font-weight:700;border:2px solid var(--ink);display:inline-block;padding:2px 16px;border-radius:8px;margin:6px 0}
+.empty{text-align:center;color:var(--mut);padding:20px}
+.bar{height:14px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%}
+.tw{overflow-x:auto;margin-bottom:12px}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}th{background:var(--bg);color:var(--pri)}
+#dlg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}#dlg.show{display:flex}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--hero);color:#fff;padding:10px 18px;border-radius:99px;z-index:11;display:none;max-width:90%;text-align:center}#toast.show{display:block}
+@media print{header,.tabs,.stats,#tanks,#exp,#prn{display:none!important}}
+#gate{overflow:auto;position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:12;padding:16px}#gate.show{display:flex}
+</style></head><body>
+<header><div class="crest">🎖️</div><div><h1>ระบบสั่งจ่ายน้ำมัน</h1><small>กองพันทหารราบที่ 2 (ค่ายตากสิน)</small></div>
+<div style="margin-left:auto;text-align:right"><span class="pill" id="who" style="display:none"></span> <button class="mini" id="out" style="display:none;color:#fff;border-color:#d9cf9f">ออกจากระบบ</button> <button class="mini" id="pw" style="display:none;color:#fff;border-color:#d9cf9f">🔑 เปลี่ยนรหัส</button> <span class="pill" id="conn">กำลังเชื่อมต่อ…</span><br><small id="clock"></small></div></header>
+<div class="wrap">
+<div class="tabs"><button id="t-c" class="on">🏢 ห้องควบคุม</button><button id="t-p">⛽ ปั๊มน้ำมัน</button><button id="t-r">📊 รายงาน</button><button id="t-u">👥 ผู้ใช้งาน</button></div>
+<div class="stats" id="stats"></div><div class="card" id="tanks" style="margin-bottom:14px"></div>
+
+<div id="v-c" class="grid">
+ <div class="card"><h2>สั่งจ่ายน้ำมัน</h2>
+  <label>ประเภทน้ำมัน</label><div class="fuels" id="fuels"></div>
+  <label>จำนวน (ลิตร)</label><input id="qty" type="number" min="1" inputmode="decimal" placeholder="เช่น 40">
+  <label>ภารกิจในการจ่าย</label><input id="mis" placeholder="เช่น ลาดตระเวน / ขนส่งเสบียง / ฝึก">
+  <label>ทะเบียนรถ</label><input id="plate" placeholder="เช่น ทบ. 1234">
+  <label>ชื่อผู้สั่ง</label><input id="by" placeholder="ยศ ชื่อ-สกุล ผู้สั่งจ่าย">
+  <button class="btn" id="send">📤 ส่งคำสั่งไปที่ปั๊ม</button></div>
+ <div class="card"><h2>รายการคำสั่งจ่าย</h2><div id="list-c"></div></div>
+</div>
+
+<div id="v-p" class="grid" style="display:none">
+ <div class="card"><h2>สถานะปั๊ม</h2><p style="margin:0 0 10px;color:var(--mut)">คำสั่งใหม่จากห้องควบคุมจะเด้งขึ้นอัตโนมัติพร้อมเสียงแจ้งเตือน</p>
+  <button class="btn s" id="snd" style="margin-top:0">🔇 แตะเพื่อเปิดเสียงแจ้งเตือน</button>
+  <button class="btn s" id="test">🔔 ทดสอบเสียง</button></div>
+ <div class="card"><h2>คำสั่งที่ต้องจ่าย</h2><div id="list-p"></div></div>
+</div>
+</div>
+<div id="v-r" style="display:none"><div class="card"><h2>รายงานสรุปรายเดือน</h2><label>เลือกเดือน</label><input id="rm" type="month">
+<div style="display:flex;gap:8px"><button class="btn" id="exp">⬇️ ส่งออกไฟล์ CSV (Excel)</button><button class="btn s" id="prn" style="margin-top:14px">🖨️ พิมพ์</button></div><div id="rep" style="margin-top:12px"></div></div></div>
+<div id="v-u" style="display:none"><div class="card"><h2>จัดการบัญชีผู้ใช้ (Admin)</h2>
+<label>ชื่อผู้ใช้ (a-z 0-9 _)</label><input id="nu-u" autocapitalize="none"><label>ยศ ชื่อ-สกุล</label><input id="nu-n">
+<label>บทบาท</label><select id="nu-r"><option value="control">ผู้สั่ง (ห้องควบคุม)</option><option value="pump">ผู้จ่าย (ปั๊ม)</option><option value="admin">ผู้ดูแลระบบ (admin)</option></select>
+<label>รหัสผ่าน (อย่างน้อย 8 ตัว)</label><input id="nu-p" type="password"><button class="btn" id="nu-go">➕ เพิ่มผู้ใช้</button>
+<h2 style="margin-top:16px">บัญชีทั้งหมด</h2><div id="ul"></div></div></div>
+<div id="gate" class="show"><div class="alert" style="animation:none;border-color:var(--pri);text-align:left"><div style="text-align:center;font-size:44px">🎖️</div>
+<h2 style="text-align:center;font-size:20px">เข้าสู่ระบบ<br><small style="font-weight:400;color:var(--mut)">ระบบสั่งจ่ายน้ำมัน ร.2 ค่ายตากสิน</small></h2>
+<div id="lg-load" style="text-align:center;color:var(--mut)">กำลังโหลด…</div>
+<div id="lg-form" style="display:none"><label>ชื่อผู้ใช้</label><input id="lg-u" autocapitalize="none" autocomplete="username"><label>รหัสผ่าน</label><input id="lg-p" type="password" autocomplete="current-password"><button class="btn g" id="lg-go">เข้าสู่ระบบ</button></div>
+<div id="lg-setup" style="display:none"><p>บัญชีนี้ยังไม่ได้รับสิทธิ์ใช้งาน กรุณาแจ้งผู้ดูแลระบบ</p><button class="btn s" id="sp-out">ออกจากระบบ</button></div></div></div>
+<div id="dlg"><div class="alert" style="text-align:left;animation:none;border-color:var(--pri)"><h2 id="d-t"></h2><div id="d-f"></div><button class="btn g" id="d-ok">บันทึก</button><button class="btn s" id="d-no">ยกเลิก</button></div></div>
+<div id="toast"></div>
+
+<div id="modal"><div class="alert"><div style="font-size:44px">🚨</div><h2 style="font-size:22px">มีคำสั่งจ่ายน้ำมันใหม่!</h2>
+ <div id="m-f" style="font-size:22px;font-weight:700"></div><div class="big" id="m-q"></div>
+ <div class="plate" id="m-p"></div><div id="m-m" style="color:var(--mut)"></div>
+ <button class="btn g" id="m-ok">✅ รับทราบคำสั่ง</button></div></div>
+
+<script>
+/* ===== ตั้งค่า Firebase (ดู README) ===== */
+const FIREBASE_URL="https://oilbattalion1002-default-rtdb.asia-southeast1.firebasedatabase.app/";   // Realtime Database URL
+const FIREBASE_KEY="AIzaSyA8s87MtBwTRBhO9-k7qqmjyfD4UNa0XwA";   // Web API key (Project settings)
+/* ===== Firebase Auth (REST) ===== */
+const AUTH={tok:null,rt:null,uid:null,exp:0};
+async function idt(path,body){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/${path}?key=${FIREBASE_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+ const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||"error");return j}
+function setTok(j){AUTH.tok=j.idToken;AUTH.rt=j.refreshToken;AUTH.uid=j.localId;AUTH.exp=Date.now()+(Number(j.expiresIn)||3600)*1000-60000;try{localStorage.setItem("fuel_rt",JSON.stringify(AUTH.rt))}catch(e){}}
+async function fresh(f){if(!f&&AUTH.tok&&Date.now()<AUTH.exp)return AUTH.tok;
+ const r=await fetch("https://securetoken.googleapis.com/v1/token?key="+FIREBASE_KEY,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(AUTH.rt)});
+ const j=await r.json();if(!r.ok)throw new Error("auth");
+ AUTH.tok=j.id_token;AUTH.rt=j.refresh_token;AUTH.uid=j.user_id;AUTH.exp=Date.now()+(Number(j.expires_in)||3600)*1000-60000;try{localStorage.setItem("fuel_rt",JSON.stringify(AUTH.rt))}catch(e){}return AUTH.tok}
+/* ===== db shim: Realtime Database REST + SSE (ส่ง token ทุกคำขอ) ===== */
+function fbShim(FB){FB=FB.replace(/\/$/,"");
+ const j=async(p,o)=>{const t=await fresh();const r=await fetch(FB+"/"+p+".json?auth="+t,o);if(!r.ok)throw new Error(r.status);return r.json()};
+ const watch=(p,cb,err)=>{const pull=async()=>{try{cb(await j(p))}catch(e){err&&err(e)}};pull();let es;
+  const open=async()=>{try{es&&es.close();const t=await fresh();es=new EventSource(FB+"/"+p+".json?auth="+t);["put","patch"].forEach(x=>es.addEventListener(x,pull))}catch(e){}};open();
+  const iv=setInterval(pull,10000),rn=setInterval(open,40*60000);return()=>{clearInterval(iv);clearInterval(rn);es&&es.close()}};
+ const doc=p=>({id:p.split("/").pop(),path:p,
+  get:async()=>{const v=await j(p);return{exists:v!=null,data:()=>v}},
+  set:d=>j(p,{method:"PUT",body:JSON.stringify(d)}),del:()=>j(p,{method:"DELETE"}),
+  onSnapshot:(cb,err)=>watch(p,v=>cb({exists:v!=null,data:()=>v}),err)});
+ const collection=n=>({doc:id=>doc(n+"/"+id),orderBy(){return this},limit(k){this.k=k;return this},
+  onSnapshot(cb,err){const q=this;let prev={};return watch(n,v=>{const all=Object.values(v||{}).sort((a,b)=>b.ts-a.ts).slice(0,q.k||1000),cur={},ch=[];
+   all.forEach(d=>{const s=JSON.stringify(d);cur[d.id]=s;if(prev[d.id]!==s)ch.push({type:prev[d.id]?"modified":"added",doc:{data:()=>d}})});prev=cur;
+   cb({docs:all.map(d=>({data:()=>d})),docChanges:()=>ch})},err)}});
+ return{doc,collection}}
+const FUELS=[{k:"diesel",n:"ดีเซล",i:"🟢"},{k:"benzine",n:"เบนซิน",i:"🔴"},{k:"gasohol95",n:"แก๊สโซฮอล์ 95",i:"🟠"}];
+const FN=k=>FUELS.find(f=>f.k===k)||{n:k,i:""};
+const ST={pending:"รอจ่าย",doing:"กำลังจ่าย",done:"จ่ายแล้ว",cancel:"ยกเลิก"};
+const LS={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let me=null,role=null,accts={},acctRef=null,acctsReady=false,sess=LS.get("fuel_sess",null);
+const ROLE={admin:"ผู้ดูแลระบบ (admin)",control:"ผู้สั่ง (ห้องควบคุม)",pump:"ผู้จ่าย (ปั๊ม)"};
+let fuel="diesel",orders=[],view="c",audioOn=false,ctx,first=true,queue=[],db=null,col=null,tankRef=null;
+let tanks=LS.get("fuel_tanks",null)||{diesel:{cap:10000,lv:0},benzine:{cap:10000,lv:0},gasohol95:{cap:10000,lv:0}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ym=t=>{const x=new Date(t);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")};
+const ymd=t=>ym(t)+"-"+String(new Date(t).getDate()).padStart(2,"0");
+const L=o=>Number(o.done||o.qty);
+$("fuels").innerHTML=FUELS.map(f=>`<div data-k="${f.k}">${f.i}<br>${f.n}</div>`).join("");
+function selFuel(){document.querySelectorAll("#fuels div").forEach(d=>d.classList.toggle("on",d.dataset.k===fuel))}
+$("fuels").onclick=e=>{const d=e.target.closest("div[data-k]");if(d){fuel=d.dataset.k;selFuel()}};selFuel();
+$("by").value=LS.get("fuel_name_c","");$("rm").value=ym(Date.now());$("rm").onchange=renderReport;
+setInterval(()=>$("clock").textContent=new Date().toLocaleString("th-TH",{dateStyle:"medium",timeStyle:"medium"}),1000);
+function show(v){view=v;["c","p","r","u"].forEach(x=>{$("v-"+x).style.display=x===v?(x==="r"||x==="u"?"block":"grid"):"none";$("t-"+x).classList.toggle("on",x===v)});if(v==="r")renderReport();if(v==="u")renderUsers()}
+["c","p","r","u"].forEach(x=>$("t-"+x).onclick=()=>show(x));
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),3500)}
+function ask(title,fields){return new Promise(res=>{$("d-t").textContent=title;
+ $("d-f").innerHTML=fields.map(f=>`<label>${f.l}</label><input id="d-${f.id}" type="${f.t||"text"}" value="${esc(f.v)}">`).join("");
+ $("dlg").classList.add("show");const close=v=>{$("dlg").classList.remove("show");res(v)};
+ $("d-ok").onclick=()=>close(Object.fromEntries(fields.map(f=>[f.id,$("d-"+f.id).value.trim()])));$("d-no").onclick=()=>close(null)})}
+
+/* sound */
+function unlock(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume();audioOn=true;$("snd").textContent="🔊 เปิดเสียงแจ้งเตือนแล้ว"}catch(e){}}
+$("snd").onclick=unlock;
+function beep(){if(!audioOn||!ctx)return;for(let i=0;i<6;i++){const o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime+i*.3;
+ o.type="square";o.frequency.value=i%2?660:990;g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+.26)}}
+function speak(o){try{if(!audioOn)return;const u=new SpeechSynthesisUtterance(`มีคำสั่งจ่ายน้ำมัน ${FN(o.fuel).n} ${o.qty} ลิตร ทะเบียน ${o.plate}`);u.lang="th-TH";speechSynthesis.speak(u)}catch(e){}}
+$("test").onclick=()=>{unlock();beep()};
+document.addEventListener("click",()=>{if(view==="p"&&!audioOn)unlock()},{once:true});
+
+/* alert */
+function alertOrder(o){queue.push(o);if(!$("modal").classList.contains("show"))next()}
+function next(){const o=queue.shift();if(!o){$("modal").classList.remove("show");return}
+ $("m-f").textContent=FN(o.fuel).i+" "+FN(o.fuel).n;$("m-q").textContent=o.qty+" ลิตร";$("m-p").textContent=o.plate;$("m-m").textContent="ภารกิจ: "+o.mission+(o.by?" · ผู้สั่ง: "+o.by:"");
+ $("modal").classList.add("show");beep();speak(o);if(navigator.vibrate)navigator.vibrate([300,150,300,150,300])}
+$("m-ok").onclick=next;
+
+/* data */
+const local={bc:("BroadcastChannel" in window)?new BroadcastChannel("fuel"):null};
+const sorted=l=>l.slice().sort((a,b)=>b.ts-a.ts);
+if(local.bc)local.bc.onmessage=()=>{tanks=LS.get("fuel_tanks",tanks);renderTanks();apply(sorted(LS.get("fuel",[])),[])};
+async function save(o){
+ if(col){try{await col.doc(o.id).set(o)}catch(e){toast("บันทึกไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตและการตั้งค่า Firebase")}return}
+ const l=LS.get("fuel",[]),i=l.findIndex(x=>x.id===o.id);i<0?l.push(o):l[i]=o;LS.set("fuel",l);local.bc&&local.bc.postMessage(1);apply(sorted(l),[o])}
+async function saveTanks(){LS.set("fuel_tanks",tanks);renderTanks();if(tankRef){try{await tankRef.set({t:tanks})}catch(e){toast("บันทึกยอดถังไม่สำเร็จ")}}else local.bc&&local.bc.postMessage(1)}
+function apply(list,changed){orders=list;render();if(view==="r")renderReport();
+ if(first){first=false;return}
+ changed.forEach(o=>{if(o.status==="pending"&&Date.now()-o.ts<120000&&view==="p")alertOrder(o)})}
+
+/* render */
+function renderTanks(){$("tanks").innerHTML=`<h2>🛢️ ยอดคงเหลือในถัง</h2>`+FUELS.map(f=>{const t=tanks[f.k],p=t.cap?Math.min(100,Math.round(t.lv/t.cap*100)):0;
+ return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-weight:600;gap:8px;flex-wrap:wrap"><span>${f.i} ${f.n}</span><span>${t.lv.toLocaleString()} / ${t.cap.toLocaleString()} ลิตร (${p}%)${p<20?" ⚠️ ใกล้หมด":""}</span></div>
+ <div class="bar"><i style="width:${p}%;background:${p<20?"var(--bad)":p<50?"var(--warn)":"var(--ok)"}"></i></div><button class="mini" data-tk="${f.k}">✏️ รับน้ำมันเข้า / ตั้งค่า</button></div>`}).join("")}
+function render(){
+ const today=new Date().toDateString(),dn={},od={};FUELS.forEach(f=>{dn[f.k]=0;od[f.k]=0});
+ orders.forEach(o=>{if(new Date(o.ts).toDateString()!==today||!(o.fuel in dn))return;if(o.status==="done")dn[o.fuel]+=L(o);if(o.status!=="cancel")od[o.fuel]+=Number(o.qty)});
+ $("stats").innerHTML=FUELS.map(f=>`<div><b>${dn[f.k]}</b><span>${f.n} จ่ายแล้ววันนี้ (ลิตร)<br>สั่งทั้งหมด ${od[f.k]}</span></div>`).join("");
+ const card=(o,p)=>`<div class="o ${o.status}"><span class="tag">${ST[o.status]}</span><b>${FN(o.fuel).i} ${FN(o.fuel).n} — ${o.qty} ลิตร</b>
+ <div class="m">ทะเบียน <b>${esc(o.plate)}</b> · ภารกิจ: ${esc(o.mission)}</div><div class="m">${new Date(o.ts).toLocaleString("th-TH")}${o.done?` · จ่ายจริง ${o.done} ลิตร`:""}</div>
+ <div class="m">ผู้สั่ง: ${esc(o.by||"-")}${o.status==="done"?` · ผู้จ่าย: ${esc(o.pumper||"-")}`:""}</div>
+ ${p?(o.status==="pending"?`<button class="btn" data-a="doing" data-id="${o.id}">▶️ เริ่มจ่าย</button>`:o.status==="doing"?`<button class="btn g" data-a="done" data-id="${o.id}">✅ จ่ายเสร็จสิ้น</button>`:""):
+ (o.status==="pending"?`<button class="mini" data-a="cancel" data-id="${o.id}">ยกเลิกคำสั่ง</button>`:"")}</div>`;
+ $("list-c").innerHTML=orders.length?orders.slice(0,30).map(o=>card(o,0)).join(""):'<div class="empty">ยังไม่มีคำสั่งจ่าย</div>';
+ const act=orders.filter(o=>o.status==="pending"||o.status==="doing").reverse();
+ $("list-p").innerHTML=act.length?act.map(o=>card(o,1)).join(""):'<div class="empty">ไม่มีคำสั่งค้างจ่าย ✔</div>'}
+function renderReport(){const m=$("rm").value||ym(Date.now()),all=orders.filter(o=>ym(o.ts)===m),dn=all.filter(o=>o.status==="done");
+ const grp=fn=>{const r={};dn.forEach(o=>{const k=fn(o)||"-";r[k]=r[k]||{n:0,l:0};r[k].n++;r[k].l+=L(o)});return r};
+ const tb=(h,r)=>`<div class="tw"><table><tr><th>${h}</th><th>ครั้ง</th><th>ลิตร</th></tr>`+(Object.entries(r).sort().map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.n}</td><td>${v.l.toLocaleString()}</td></tr>`).join("")||'<tr><td colspan="3">ไม่มีข้อมูล</td></tr>')+`</table></div>`;
+ const byF={};FUELS.forEach(f=>byF[f.n]={n:0,l:0});dn.forEach(o=>{const r=byF[FN(o.fuel).n];if(r){r.n++;r.l+=L(o)}});
+ $("rep").innerHTML=`<p><b>รวมจ่ายแล้ว ${dn.reduce((a,o)=>a+L(o),0).toLocaleString()} ลิตร</b> จาก ${dn.length} รายการ (คำสั่งทั้งหมด ${all.length})</p>`
+ +tb("ประเภทน้ำมัน",byF)+tb("รายวัน",grp(o=>ymd(o.ts)))+tb("ภารกิจ",grp(o=>o.mission))+tb("ทะเบียนรถ",grp(o=>o.plate))+tb("ผู้จ่าย",grp(o=>o.pumper))}
+async function exportCsv(){const m=$("rm").value,q=s=>'"'+String(s??"").replace(/"/g,'""')+'"';
+ const rows=orders.filter(o=>ym(o.ts)===m).sort((a,b)=>a.ts-b.ts);
+ const head=["วันที่","เวลา","ประเภทน้ำมัน","ลิตรที่สั่ง","ลิตรที่จ่ายจริง","ภารกิจ","ทะเบียนรถ","ผู้สั่ง","ผู้จ่าย","สถานะ"];
+ const body=rows.map(o=>{const d=new Date(o.ts);return [d.toLocaleDateString("th-TH"),d.toLocaleTimeString("th-TH"),FN(o.fuel).n,o.qty,o.done??"",o.mission,o.plate,o.by,o.pumper,ST[o.status]].map(q).join(",")});
+ const data="\ufeff"+[head.map(q).join(","),...body].join("\r\n");
+ try{const b=new Blob([data],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=`fuel-report-${m}.csv`;document.body.appendChild(a);a.click();a.remove()}
+ catch(e){try{await navigator.clipboard.writeText(data);toast("ดาวน์โหลดไม่ได้ในโหมดนี้ — คัดลอกข้อมูล CSV ไปยังคลิปบอร์ดแล้ว")}catch(x){toast("ส่งออกไฟล์ไม่สำเร็จ")}}}
+$("exp").onclick=exportCsv;$("prn").onclick=()=>{try{window.print()}catch(e){toast("พิมพ์ไม่ได้ในโหมดนี้")}};
+
+/* actions */
+document.addEventListener("click",async e=>{
+ const rm=e.target.closest("[data-rm]");
+ if(rm&&role==="admin"){const r=await ask("ยืนยันลบสิทธิ์ผู้ใช้นี้",[]);if(!r)return;
+  try{await db.doc("users/"+rm.dataset.rm).del();toast("ลบสิทธิ์แล้ว")}catch(x){toast("ลบไม่สำเร็จ")}return}
+ const k=e.target.closest("[data-tk]");
+ if(k){const f=k.dataset.tk,t=tanks[f];const r=await ask("ตั้งค่าถัง "+FN(f).n,[{id:"add",l:"รับน้ำมันเข้าเพิ่ม (ลิตร)",t:"number",v:0},{id:"lv",l:"ยอดคงเหลือปัจจุบัน (ลิตร)",t:"number",v:t.lv},{id:"cap",l:"ความจุถัง (ลิตร)",t:"number",v:t.cap}]);
+  if(!r)return;tanks[f]={cap:Math.max(1,Number(r.cap)||t.cap),lv:Math.max(0,(Number(r.lv)||0)+(Number(r.add)||0))};saveTanks();return}
+ const b=e.target.closest("[data-a]");if(!b)return;const o=orders.find(x=>x.id===b.dataset.id);if(!o)return;
+ const n={...o,status:b.dataset.a};
+ if(n.status==="done"){const r=await ask("จ่ายเสร็จสิ้น",[{id:"q",l:"จ่ายจริง (ลิตร)",t:"number",v:o.qty},{id:"p",l:"ชื่อผู้จ่าย",v:me?me.name:LS.get("fuel_name_p","")}]);
+  if(!r)return;if(!r.p&&!me){toast("กรุณาระบุชื่อผู้จ่าย");return}
+  n.done=Number(r.q)||o.qty;n.pumper=me?me.name:r.p;n.pumperId=me?me.id:null;LS.set("fuel_name_p",r.p);
+  const t=tanks[o.fuel];if(t){t.lv=Math.max(0,t.lv-n.done);saveTanks()}}
+ save(n)});
+$("send").onclick=()=>{const qty=Number($("qty").value),mission=$("mis").value.trim(),plate=$("plate").value.trim(),by=$("by").value.trim();
+ if(!qty||qty<=0||!mission||!plate||!by){toast("กรุณากรอก จำนวนลิตร ภารกิจ ทะเบียนรถ และชื่อผู้สั่ง ให้ครบ");return}
+ LS.set("fuel_name_c",by);save({id:"o"+Date.now().toString(36),fuel,qty,mission,plate,by,byId:me?me.id:null,status:"pending",ts:Date.now()});
+ $("qty").value="";$("mis").value="";$("plate").value="";toast("ส่งคำสั่งไปที่ปั๊มแล้ว")};
+
+/* login (Firebase Authentication) */
+let prof=null,started=false;
+async function loadMe(){const d=(await db.doc("users/"+AUTH.uid).get()).data();prof=d?{id:AUTH.uid,name:d.name,role:d.role,username:d.username}:{id:AUTH.uid,name:"",role:null}}
+function applyRole(){const logged=!!AUTH.tok,cfg=!!(FIREBASE_URL&&FIREBASE_KEY);me=null;role=null;
+ if(logged&&prof&&prof.role){me={id:prof.id,name:prof.name};role=prof.role}
+ $("gate").classList.toggle("show",!me);$("lg-load").style.display=cfg?"none":"block";$("lg-load").textContent="ยังไม่ได้ตั้งค่า Firebase (ดู README)";
+ $("lg-form").style.display=cfg&&!logged?"block":"none";$("lg-setup").style.display=cfg&&logged&&!role?"block":"none";
+ $("who").style.display=$("out").style.display=$("pw").style.display=me?"":"none";if(!me)return;
+ const ad=role==="admin",can={c:ad||role==="control",p:ad||role==="pump",r:ad||role==="control",u:ad};
+ ["c","p","r","u"].forEach(x=>$("t-"+x).style.display=can[x]?"":"none");
+ if(!can[view]){const f=["c","p","r","u"].find(x=>can[x]);if(f)show(f)}
+ $("who").textContent="👤 "+me.name+" · "+ROLE[role];$("by").value=me.name;$("by").readOnly=true;
+ if(!started){started=true;startData()}}
+function renderUsers(){if(role!=="admin")return;$("ul").innerHTML=Object.entries(accts).map(([id,a])=>`<div class="o done" style="opacity:1"><span class="tag">${ROLE[a.role]}</span><b>${esc(a.name)}</b> <span class="m">@${esc(a.username)}</span>${id!==me.id?`<br><button class="mini" data-rm="${id}">🗑 ลบสิทธิ์</button>`:""}</div>`).join("")}
+$("lg-go").onclick=async()=>{try{unlock()}catch(e){}const u=$("lg-u").value.trim().toLowerCase();
+ try{setTok(await idt("accounts:signInWithPassword",{email:u+"@fuel.local",password:$("lg-p").value,returnSecureToken:true}));await loadMe();$("lg-p").value="";applyRole()}
+ catch(e){AUTH.tok=null;toast("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")}};
+const logout=()=>{try{localStorage.removeItem("fuel_rt")}catch(e){}location.reload()};
+$("out").onclick=logout;$("sp-out").onclick=logout;
+$("pw").onclick=async()=>{const r=await ask("เปลี่ยนรหัสผ่าน",[{id:"p",l:"รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)",t:"password"}]);if(!r)return;if(r.p.length<8){toast("รหัสผ่านสั้นเกินไป");return}
+ try{setTok(await idt("accounts:update",{idToken:await fresh(),password:r.p,returnSecureToken:true}));toast("เปลี่ยนรหัสผ่านแล้ว")}catch(e){toast("เปลี่ยนรหัสผ่านไม่สำเร็จ")}};
+$("nu-go").onclick=async()=>{const u=$("nu-u").value.trim().toLowerCase(),n=$("nu-n").value.trim(),p=$("nu-p").value;
+ if(!/^[a-z0-9_]{3,20}$/.test(u)||!n||p.length<8){toast("กรอกให้ครบ: ชื่อผู้ใช้ a-z 0-9 _ (3-20 ตัว) ชื่อ และรหัสผ่านอย่างน้อย 8 ตัว");return}
+ try{const j=await idt("accounts:signUp",{email:u+"@fuel.local",password:p,returnSecureToken:false});
+  await db.doc("users/"+j.localId).set({name:n,role:$("nu-r").value,username:u});["nu-u","nu-n","nu-p"].forEach(i=>$(i).value="");toast("เพิ่มผู้ใช้แล้ว")}
+ catch(e){toast(e.message==="EMAIL_EXISTS"?"มีชื่อผู้ใช้นี้แล้ว":"เพิ่มผู้ใช้ไม่สำเร็จ: "+e.message)}};
+
+/* data (เริ่มหลังล็อกอินและมีสิทธิ์) */
+function startData(){col=db.collection("orders");tankRef=db.doc("config/tanks");let init=true;
+ tankRef.onSnapshot(s=>{const d=s.exists&&s.data();if(d&&d.t){tanks=d.t;LS.set("fuel_tanks",tanks);renderTanks()}},()=>{});
+ col.orderBy("ts","desc").limit(1000).onSnapshot(s=>{const list=s.docs.map(d=>d.data());
+  const ch=init?[]:s.docChanges().filter(c=>c.type!=="removed").map(c=>c.doc.data());
+  if(init){first=false;init=false}apply(list,ch)},()=>{});
+ if(role==="admin")db.doc("users").onSnapshot(s=>{accts=s.data()||{};if(view==="u")renderUsers()},()=>{});
+ $("conn").textContent="🟢 เชื่อมต่อออนไลน์"}
+async function boot(){if(!(FIREBASE_URL&&FIREBASE_KEY)){applyRole();return}
+ db=fbShim(FIREBASE_URL);const rt=LS.get("fuel_rt",null);
+ if(rt){try{AUTH.rt=rt;await fresh(true);await loadMe()}catch(e){AUTH.tok=null}}applyRole()}
+renderTanks();render();applyRole();boot();
+</script></body></html>
