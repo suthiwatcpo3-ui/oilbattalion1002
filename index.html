@@ -188,7 +188,7 @@ function render(){
  <div class="m">ทะเบียน <b>${esc(o.plate)}</b> · ภารกิจ: ${esc(o.mission)}</div><div class="m">${new Date(o.ts).toLocaleString("th-TH")}${o.done?` · จ่ายจริง ${o.done} ลิตร`:""}</div>
  <div class="m">ผู้สั่ง: ${esc(o.by||"-")}${o.status==="done"?` · ผู้จ่าย: ${esc(o.pumper||"-")}`:""}</div>
  ${p?(o.status==="pending"?`<button class="btn" data-a="doing" data-id="${o.id}">▶️ เริ่มจ่าย</button>`:o.status==="doing"?`<button class="btn g" data-a="done" data-id="${o.id}">✅ จ่ายเสร็จสิ้น</button>`:""):
- (o.status==="pending"?`<button class="mini" data-a="cancel" data-id="${o.id}">ยกเลิกคำสั่ง</button>`:"")}</div>`;
+ (o.status==="pending"?`<button class="mini" data-a="cancel" data-id="${o.id}">ยกเลิกคำสั่ง</button>`:"")}${role==="admin"?`<div><button class="mini" style="color:var(--bad);border-color:var(--bad)" data-del="${o.id}">🗑 ลบรายการ</button></div>`:""}</div>`;
  $("list-c").innerHTML=orders.length?orders.slice(0,30).map(o=>card(o,0)).join(""):'<div class="empty">ยังไม่มีคำสั่งจ่าย</div>';
  const act=orders.filter(o=>o.status==="pending"||o.status==="doing").reverse();
  $("list-p").innerHTML=act.length?act.map(o=>card(o,1)).join(""):'<div class="empty">ไม่มีคำสั่งค้างจ่าย ✔</div>'}
@@ -212,6 +212,11 @@ document.addEventListener("click",async e=>{
  const rm=e.target.closest("[data-rm]");
  if(rm&&role==="admin"){const r=await ask("ยืนยันลบสิทธิ์ผู้ใช้นี้",[]);if(!r)return;
   try{await db.doc("users/"+rm.dataset.rm).del();toast("ลบสิทธิ์แล้ว")}catch(x){toast("ลบไม่สำเร็จ")}return}
+ const dl=e.target.closest("[data-del]");
+ if(dl){if(role!=="admin")return;const o=orders.find(x=>x.id===dl.dataset.del);if(!o)return;
+  const r=await ask("ยืนยันลบรายการนี้ถาวร ("+FN(o.fuel).n+" "+o.qty+" ลิตร ทะเบียน "+o.plate+")",[]);if(!r)return;
+  try{if(col)await col.doc(o.id).del();else{LS.set("fuel",LS.get("fuel",[]).filter(x=>x.id!==o.id));local.bc&&local.bc.postMessage(1)}
+   orders=orders.filter(x=>x.id!==o.id);render();if(view==="r")renderReport();toast("ลบรายการแล้ว")}catch(x){toast("ลบไม่สำเร็จ: "+x.message)}return}
  const k=e.target.closest("[data-tk]");
  if(k){const f=k.dataset.tk,t=tanks[f];const r=await ask("ตั้งค่าถัง "+FN(f).n,[{id:"add",l:"รับน้ำมันเข้าเพิ่ม (ลิตร)",t:"number",v:0},{id:"lv",l:"ยอดคงเหลือปัจจุบัน (ลิตร)",t:"number",v:t.lv},{id:"cap",l:"ความจุถัง (ลิตร)",t:"number",v:t.cap}]);
   if(!r)return;tanks[f]={cap:Math.max(1,Number(r.cap)||t.cap),lv:Math.max(0,(Number(r.lv)||0)+(Number(r.add)||0))};saveTanks();return}
