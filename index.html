@@ -242,8 +242,16 @@ function applyRole(){const logged=!!AUTH.tok,cfg=!!(FIREBASE_URL&&FIREBASE_KEY);
  if(!started){started=true;startData()}}
 function renderUsers(){if(role!=="admin")return;$("ul").innerHTML=Object.entries(accts).map(([id,a])=>`<div class="o done" style="opacity:1"><span class="tag">${ROLE[a.role]}</span><b>${esc(a.name)}</b> <span class="m">@${esc(a.username)}</span>${id!==me.id?`<br><button class="mini" data-rm="${id}">🗑 ลบสิทธิ์</button>`:""}</div>`).join("")}
 $("lg-go").onclick=async()=>{try{unlock()}catch(e){}const u=$("lg-u").value.trim().toLowerCase();
- try{setTok(await idt("accounts:signInWithPassword",{email:u+"@fuel.local",password:$("lg-p").value,returnSecureToken:true}));await loadMe();$("lg-p").value="";applyRole()}
- catch(e){AUTH.tok=null;toast("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")}};
+ let step="signIn";try{setTok(await idt("accounts:signInWithPassword",{email:u+"@fuel.local",password:$("lg-p").value,returnSecureToken:true}));step="loadMe";await loadMe();$("lg-p").value="";applyRole()}
+ catch(e){AUTH.tok=null;const m=String(e.message||e);console.error("login",step,e);
+  let t="เข้าสู่ระบบไม่สำเร็จ: "+m;
+  if(step==="signIn"){
+   if(/EMAIL_NOT_FOUND|INVALID_PASSWORD|INVALID_LOGIN_CREDENTIALS/.test(m))t="ไม่พบผู้ใช้ "+u+"@fuel.local หรือรหัสผ่านไม่ถูกต้อง";
+   else if(/OPERATION_NOT_ALLOWED|PASSWORD_LOGIN_DISABLED/.test(m))t="ยังไม่ได้เปิด Email/Password ใน Firebase Authentication";
+   else if(/API key|API_KEY|referer|blocked/i.test(m))t="API key ใช้ไม่ได้/ถูกจำกัด: "+m;
+   else if(/Failed to fetch|NetworkError/i.test(m))t="เชื่อมต่อ Firebase ไม่ได้ ตรวจอินเทอร์เน็ต";
+  }else t="ล็อกอินผ่านแล้ว แต่อ่านข้อมูลผู้ใช้ไม่ได้ (ตรวจ Rules ของ Realtime Database): "+m;
+  toast(t);const g=document.getElementById("toast");clearTimeout(toast.t);toast.t=setTimeout(()=>g.classList.remove("show"),9000)}};
 const logout=()=>{try{localStorage.removeItem("fuel_rt")}catch(e){}location.reload()};
 $("out").onclick=logout;$("sp-out").onclick=logout;
 $("pw").onclick=async()=>{const r=await ask("เปลี่ยนรหัสผ่าน",[{id:"p",l:"รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)",t:"password"}]);if(!r)return;if(r.p.length<8){toast("รหัสผ่านสั้นเกินไป");return}
